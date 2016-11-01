@@ -1,4 +1,4 @@
-unsigned long intervallMillis = 10;
+unsigned long intervallMillis = 250;
 unsigned long lastIteration = 0;
 unsigned long timeDifference = 0;
 int analogValues[] = {0,0,0,0,0};
@@ -56,11 +56,11 @@ void sendError(int errorCode)
 
 void sendData(int pin, int value, unsigned long timestamp)
 {
-  Serial.print("{Pin: ");
+  Serial.print("{\"pin\": ");
   Serial.print(pin);
-  Serial.print(", value: ");
+  Serial.print(", \"value\": ");
   Serial.print(value);
-  Serial.print(", time: ");
+  Serial.print(", \"time\": ");
   Serial.print(timestamp);
   Serial.println("}");
 }

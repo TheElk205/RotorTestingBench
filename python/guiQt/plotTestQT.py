@@ -7,25 +7,44 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 import numpy as np
 
+from python.guiQt.SerialReader import SerialReader
+
 win = pg.GraphicsWindow()
 win.setWindowTitle('pyqtgraph example: Scrolling Plots')
 
+numberShownPoints = 50
 
-p2 = win.addPlot()
-data1 = np.random.normal(size=300)
-curve2 = p2.plot(data1)
-ptr1 = 0
+plots = []
+data = []
+curves = []
+for i in range(0, 4):
+    if i == 2:
+        win.nextRow()
+    plots.append(win.addPlot())
+    data.append(np.zeros(shape=numberShownPoints))
+    curves.append(plots[i].plot(data[i]))
+
+threads = []
+
+serialReader = SerialReader(1, "Thread-1", 1)
+
+serialReader.start()
+
+threads.append(serialReader)
 
 
 def update1():
-    global data1, ptr1
-    data1[:-1] = data1[1:]  # shift data in the array one sample left
-    # (see also: np.roll)
-    data1[-1] = np.random.normal()
-
-    ptr1 += 1
-    curve2.setData(data1)
-    curve2.setPos(ptr1, 0)
+    global data, curves
+    for ii in range(0, 4):
+        timeValuePairs = np.array(serialReader.values[ii])
+        if timeValuePairs.size > 2:
+            data[ii] = timeValuePairs[:, 1]
+            if data[ii].size > numberShownPoints:
+                curves[ii].setData(data[ii][-numberShownPoints:])
+                curves[ii].setPos(data[ii].size - numberShownPoints, 0)
+            else:
+                curves[ii].setData(data[ii])
+                curves[ii].setPos(0, 0)
 
 
 # update all plots
