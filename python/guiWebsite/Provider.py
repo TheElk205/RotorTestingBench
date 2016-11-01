@@ -1,6 +1,7 @@
 import sys
 import random
 
+import numpy as np
 from twisted.web.static import File
 from twisted.python import log
 from twisted.web.server import Site
@@ -23,7 +24,6 @@ class SomeServerProtocol(WebSocketServerProtocol):
        Try to find conversation partner for this client.
        """
         self.factory.register(self)
-        self.factory.findPartner(self)
 
     def connectionLost(self, reason):
         """
@@ -33,53 +33,22 @@ class SomeServerProtocol(WebSocketServerProtocol):
         self.factory.unregister(self)
 
     def onMessage(self, payload, isBinary):
-        """
-       Message sent from client, communicate this message to its conversation partner,
-       """
         self.factory.communicate(self, payload, isBinary)
 
 
-class ChatRouletteFactory(WebSocketServerFactory):
+class DataPointsFactory(WebSocketServerFactory):
     def __init__(self, *args, **kwargs):
-        super(ChatRouletteFactory, self).__init__(*args, **kwargs)
+        super(DataPointsFactory, self).__init__(*args, **kwargs)
         self.clients = {}
 
     def register(self, client):
-        """
-       Add client to list of managed connections.
-       """
         self.clients[client.peer] = {"object": client, "partner": None}
 
     def unregister(self, client):
-        """
-       Remove client from list of managed connections.
-       """
         self.clients.pop(client.peer)
 
-    def findPartner(self, client):
-        """
-       Find chat partner for a client. Check if there any of tracked clients
-       is idle. If there is no idle client just exit quietly. If there is
-       available partner assign him/her to our client.
-       """
-        available_partners = [c for c in self.clients if c != client.peer and not self.clients[c]["partner"]]
-        if not available_partners:
-            print("no partners for {} check in a moment".format(client.peer))
-        else:
-            partner_key = random.choice(available_partners)
-            self.clients[partner_key]["partner"] = client
-            self.clients[client.peer]["partner"] = self.clients[partner_key]["object"]
-
     def communicate(self, client, payload, isBinary):
-        """
-       Broker message from client to its partner.
-       """
-        c = self.clients[client.peer]
-        if not c["partner"]:
-            c["object"].sendMessage("Sorry you dont have partner yet, check back in a minute")
-        else:
-            c["partner"].sendMessage(payload)
-
+        client.sendMessage(np.array_str(np.random.rand(1, 20)))
 
 if __name__ == "__main__":
     log.startLogging(sys.stdout)
@@ -87,7 +56,7 @@ if __name__ == "__main__":
     # static file server seving index.html as root
     root = File(".")
 
-    factory = ChatRouletteFactory(u"ws://127.0.0.1:8080")
+    factory = DataPointsFactory(u"ws://127.0.0.1:8080")
     factory.protocol = SomeServerProtocol
     resource = WebSocketResource(factory)
     # websockets resource on "/ws" path
