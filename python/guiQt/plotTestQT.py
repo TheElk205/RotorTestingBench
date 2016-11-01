@@ -12,17 +12,19 @@ from python.guiQt.SerialReader import SerialReader
 win = pg.GraphicsWindow()
 win.setWindowTitle('pyqtgraph example: Scrolling Plots')
 
-numberShownPoints = 50
+numberShownPoints = 15
 
 plots = []
-data = []
+yValues = []
+xValues = []
 curves = []
 for i in range(0, 4):
     if i == 2:
         win.nextRow()
     plots.append(win.addPlot())
-    data.append(np.zeros(shape=numberShownPoints))
-    curves.append(plots[i].plot(data[i]))
+    yValues.append(np.zeros(shape=numberShownPoints))
+    xValues.append(np.zeros(shape=numberShownPoints))
+    curves.append(plots[i].plot(yValues[i]))
 
 threads = []
 
@@ -34,16 +36,17 @@ threads.append(serialReader)
 
 
 def update1():
-    global data, curves
+    global yValues, curves
     for ii in range(0, 4):
         timeValuePairs = np.array(serialReader.values[ii])
         if timeValuePairs.size > 2:
-            data[ii] = timeValuePairs[:, 1]
-            if data[ii].size > numberShownPoints:
-                curves[ii].setData(data[ii][-numberShownPoints:])
-                curves[ii].setPos(data[ii].size - numberShownPoints, 0)
+            yValues[ii] = timeValuePairs[:, 1]
+            xValues[ii] = timeValuePairs[:, 0]
+            if yValues[ii].size > numberShownPoints:
+                curves[ii].setData(y=yValues[ii][-numberShownPoints:], x=xValues[ii][-numberShownPoints:])
+                curves[ii].setPos(yValues[ii].size - numberShownPoints, 0)
             else:
-                curves[ii].setData(data[ii])
+                curves[ii].setData(y=yValues[ii], x=xValues[ii])
                 curves[ii].setPos(0, 0)
 
 
@@ -54,7 +57,7 @@ def update():
 
 timer = pg.QtCore.QTimer()
 timer.timeout.connect(update)
-timer.start(50)
+timer.start(20)
 
 ## Start Qt event loop unless running in interactive mode or using pyside.
 if __name__ == '__main__':
