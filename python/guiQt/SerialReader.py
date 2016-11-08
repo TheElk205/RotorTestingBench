@@ -41,7 +41,7 @@ class SerialReader (threading.Thread):
 
     def read_from_serial(self):
         line = self.arduino.readline().decode("utf-8")
-        # print("line: " + line)
+        print("line: " + line)
         if line.startswith("{"):
             j = json.loads(line)
             valuepair = np.array([j['time'], j['value']])

@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Various methods of drawing scrolling plots.
-"""
 
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
@@ -12,19 +9,21 @@ from python.guiQt.SerialReader import SerialReader
 win = pg.GraphicsWindow()
 win.setWindowTitle('pyqtgraph example: Scrolling Plots')
 
-numberShownPoints = 15
+numberShownPoints = 100
 
 plots = []
 yValues = []
 xValues = []
 curves = []
+pens = ['r', 'g', 'b', 'c']
 for i in range(0, 4):
     if i == 2:
         win.nextRow()
-    plots.append(win.addPlot())
+    if i == 0:
+        plots.append(win.addPlot())
     yValues.append(np.zeros(shape=numberShownPoints))
     xValues.append(np.zeros(shape=numberShownPoints))
-    curves.append(plots[i].plot(yValues[i]))
+    curves.append(plots[0].plot(yValues[i], pen=pens[i]))
 
 threads = []
 
