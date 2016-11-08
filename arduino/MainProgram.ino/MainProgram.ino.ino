@@ -1,4 +1,8 @@
-unsigned long intervallMillis = 250;
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+unsigned long intervallMillis = 50;
 unsigned long lastIteration = 0;
 unsigned long timeDifference = 0;
 int analogValues[] = {0,0,0,0,0};
@@ -10,11 +14,14 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(9600);
+
+  lcd.begin(16, 2);
+  lcd.print("Rotor Testing Bench");
+  lastIteration = millis();
 }
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
   timeDifference = millis() - lastIteration;
   if(timeDifference < intervallMillis)
     delay(intervallMillis-timeDifference);
@@ -29,6 +36,12 @@ void loop()
   // Send all values here
   sendAnalogValues();
 
+  //Write to display
+  lcd.setCursor(0, 1);
+  lcd.print(timeDifference);
+  lcd.print(" of ");
+  lcd.print(intervallMillis);
+    
   // Reset current time
   lastIteration = millis();  
 }
