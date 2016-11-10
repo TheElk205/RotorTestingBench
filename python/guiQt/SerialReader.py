@@ -3,9 +3,7 @@ from time import sleep
 
 import serial
 import threading
-import datetime
 import numpy as np
-import re
 import json
 
 from struct import unpack, calcsize
@@ -57,14 +55,6 @@ class SerialReader (threading.Thread):
 
         valuepair = np.array([time, value])
         self.values[pin].append(valuepair)
-
-    def read_json_from_serial(self):
-        line = self.arduino.readline().decode("utf-8")
-        print("line: " + line)
-        if line.startswith("{"):
-            j = json.loads(line)
-            valuepair = np.array([j['time'], j['value']])
-            self.values[j['pin']].append(valuepair)
 
     def exit(self):
         self.terminate = True

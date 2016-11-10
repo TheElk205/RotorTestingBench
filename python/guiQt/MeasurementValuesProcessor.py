@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import numpy as np
+
 from python.guiQt.SerialReader import SerialReader
 from python.guiQt.ValueMapper import ValueMapper
 
@@ -7,6 +9,9 @@ class MeasurementValuesProcessor:
     path = '/dev/ttyACM0'
     arduino = None
     valueMapper = None
+
+    # Will contain all values read from serial mapped accordingly
+    valuesPressure = [[] for y in range(5)]
 
     def __init__(self, path):
         self.path = path
@@ -25,5 +30,8 @@ class MeasurementValuesProcessor:
         :param numberOfvalues:
         :return:
         """
-        return self.valueMapper.get_mapped_value(self.arduino.values[-numberOfvalues:])
+        self.valuesPressure = [self.valueMapper.get_mapped_value(sensor) for sensor in self.arduino.values]
+        # print("Arduino Values: {}".format(self.arduino.values))
+        # print("Mapped Values: {}".format(self.valuesPressure))
+        return [sensor[-numberOfvalues:] for sensor in self.valuesPressure]
 
