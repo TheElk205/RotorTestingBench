@@ -2,14 +2,19 @@
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-unsigned long intervallMicros = 50000;
+unsigned long intervallMicros = 500e3;
 unsigned long lastIteration = 0;
+unsigned long iterationStarted = 0;
+unsigned long iterationDuration = 0;
 unsigned long timeDifference = 0;
+int iterationsDone = 0;
 
 int analogValues[] = {0,0,0,0,0};
 
 // Error Codes
 int errorIntervallTimeExceeded = 100;
+
+boolean inCycle = true;
 
 void setup()
 {
@@ -18,35 +23,34 @@ void setup()
   Serial.println("Started");
 
   lcd.begin(16, 2);
-  lcd.print("Rotor Testing Bench");
+  lcd.clear();
+  lcd.print("Rotor Testing");
   lastIteration = micros();
 }
 
 void loop()
 {
-  timeDifference = micros() - lastIteration;
-  if(timeDifference < intervallMicros)
-    delayMicroseconds(intervallMicros-timeDifference);
+  if(inCycle)
+  {
+    // Read all values here
+    readAnalogValues();
+  
+    // Send all values here
+    sendAnalogValues();
     
-  // Send error if intervall couldnt be reached
-  if(timeDifference > intervallMicros)
-    sendError(errorIntervallTimeExceeded);
-    
-  // Read all values here
-  readAnalogValues();
+    // Reset current time
+    inCycle = false;
+    lastIteration = micros();
+  }
+  else
+  {
+    timeDifference = micros() - lastIteration;
+    if(timeDifference >= intervallMicros)
+    {
+      inCycle = true;
+    }
+  }
 
-  // Send all values here
-  sendAnalogValues();
-
-  //Write to display
-  lcd.setCursor(0, 1);
-  lcd.print(timeDifference);
-  lcd.print(" of ");
-  lcd.print(intervallMicros);
-  lcd.print(" micros");
-    
-  // Reset current time
-  lastIteration = micros();  
 }
 
 void readAnalogValues()
@@ -72,6 +76,7 @@ void sendError(int errorCode)
 
 void sendData(int pin, int value, unsigned long timestamp)
 {
+  /*
   Serial.print("{\"pin\": ");
   Serial.print(pin);
   Serial.print(", \"value\": ");
@@ -79,5 +84,34 @@ void sendData(int pin, int value, unsigned long timestamp)
   Serial.print(", \"time\": ");
   Serial.print(timestamp);
   Serial.println("}");
+  */
+  //Start
+  Serial.write(0);
+  Serial.write(0);
+  Serial.write(0);
+  Serial.write(0);
+  Serial.write(0);
+
+  //Write pin
+  Serial.write(getNthByte(pin, 0));
+
+  //Write value
+  Serial.write(getNthByte(value, 0));
+
+  //Write Timestamp
+  Serial.write(getNthByte(timestamp, 0));
+  Serial.write(getNthByte(timestamp, 1));
+  Serial.write(getNthByte(timestamp, 2));
+  Serial.write(getNthByte(timestamp, 3));
+}
+
+char getNthByte(int number, int n)
+{
+  return (number >> (8*n)) & 0xff;
+}
+
+char getNthByte(unsigned long number, int n)
+{
+  return (number >> (8*n)) & 0xff;
 }
 
