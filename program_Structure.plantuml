@@ -1,0 +1,50 @@
+@startuml
+package "Python" as mainPack{
+  node "Serial Communication" as serCom
+
+  node "Controls" as controls
+
+  node "Other control (console)" as otherControls
+  package "Measurement Values processing" {
+    node "Value Mapper" as mapper
+    node "values collector" as valuesCol
+    node "Measurement Values Processor" as valuesProc
+  }
+  package "Graphical Components" {
+    node "Graphical controls" as graphicControls
+    node "GUI" as graphics
+  }
+  node "Main Program" as main
+}
+
+package "Arduino" as arduino {
+  node "Program" as arduinoMain
+}
+
+serCom --> valuesProc : "1 Reads values"
+valuesProc --> mapper : "2 Maps Values"
+mapper --> valuesProc : "3 Returns mapped values"
+valuesProc --> valuesCol : "4 Collect values"
+valuesCol --> valuesProc : "5 Return collection"
+valuesProc --> main
+main --> graphics
+graphicControls --> controls
+otherControls --> controls
+controls --> main
+main --> serCom
+graphics --> graphicControls
+graphicControls --> graphics
+
+serCom --> arduinoMain
+
+note right of mapper
+Maps values to a specific function
+e.g. Analog read produces 0-1023 --> Mapped to newton
+end note
+
+note right of valuesCol
+For example if you only want to display
+ the mean of the las 100 measurements
+end note
+
+@enduml

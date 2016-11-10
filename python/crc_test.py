@@ -45,8 +45,8 @@ def check_transmitted(transmitted, length):
     else:
         return False
 
-data = 0x1B
+yValues = 0x1B
 
-recieved = transmit(data, 5)
+recieved = transmit(yValues, 5)
 print(recieved)
 print(check_transmitted(recieved, 10))
