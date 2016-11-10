@@ -16,11 +16,9 @@ yValues = []
 xValues = []
 curves = []
 pens = ['r', 'g', 'b', 'c']
+win.nextRow()
+plots.append(win.addPlot())
 for i in range(0, 4):
-    if i == 2:
-        win.nextRow()
-    if i == 0:
-        plots.append(win.addPlot())
     yValues.append(np.zeros(shape=numberShownPoints))
     xValues.append(np.zeros(shape=numberShownPoints))
     curves.append(plots[0].plot(yValues[i], pen=pens[i]))
