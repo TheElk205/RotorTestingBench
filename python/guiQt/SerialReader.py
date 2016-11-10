@@ -10,25 +10,21 @@ import json
 
 from struct import unpack, calcsize
 
+from serial import Serial
+
+
 class SerialReader (threading.Thread):
     values = [[] for y in range(5)]
     terminate = False
-    arduino = serial.Serial('/dev/ttyACM0', 9600)
-    print(arduino.name)
-    # Toggle DTR to reset Arduino
-    arduino.setDTR(False)
-    sleep(1)
-    # toss any data already received, see
-    # http://pyserial.sourceforge.net/pyserial_api.html#serial.Serial.flushInput
-    arduino.flushInput()
-    arduino.setDTR(True)
+    path = '/dev/ttyACM0'
+    arduino = None
 
-
-    def __init__(self, threadid, name, counter):
+    def __init__(self, path):
         threading.Thread.__init__(self)
-        self.threadID = threadid
-        self.name = name
-        self.counter = counter
+        self.name = 'SerialReaderThread'
+
+        self.path = path
+        self.init_arduino()
 
     def run(self):
         print("Starting " + self.name)
@@ -36,14 +32,13 @@ class SerialReader (threading.Thread):
         while not self.terminate:
             try:
                 self.read_bytes_from_serial()
-                self.counter += 1
             except serial.SerialException as serEx:
                 print("Serial exception: {0}".format(serEx))
                 self.terminate = True
+
     def read_bytes_from_serial(self):
         isMessage = False
         if not isMessage:
-            print("Waiting for message: ")
             zerosCount = 0
             while zerosCount < 5:
                 bytes = self.arduino.read(1)
@@ -51,13 +46,14 @@ class SerialReader (threading.Thread):
                     zerosCount = zerosCount +1
                 else:
                     zerosCount = 0
-        print("Message Started: ")
+
+        # print("Message Started: ")
         pin = unpack('B', self.arduino.read(1))[0]
-        print("Pin: {0}".format(pin))
+        # print("Pin: {0}".format(pin))
         value = unpack('B', self.arduino.read(1))[0]
-        print("value: {0}".format(value))
+        # print("value: {0}".format(value))
         time = unpack('I', self.arduino.read(4))[0]
-        print("time: {0}".format(time))
+        # print("time: {0}".format(time))
 
         valuepair = np.array([time, value])
         self.values[pin].append(valuepair)
@@ -75,3 +71,14 @@ class SerialReader (threading.Thread):
 
     def get_values(self):
         return self.values
+
+    def init_arduino(self):
+        self.arduino = Serial(self.path, 9600)
+        print(self.arduino.name)
+        # Toggle DTR to reset Arduino
+        self.arduino.setDTR(False)
+        sleep(1)
+        # toss any data already received, see
+        # http://pyserial.sourceforge.net/pyserial_api.html#serial.Serial.flushInput
+        self.arduino.flushInput()
+        self.arduino.setDTR(True)

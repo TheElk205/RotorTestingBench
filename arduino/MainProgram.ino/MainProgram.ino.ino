@@ -2,7 +2,7 @@
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-unsigned long intervallMicros = 500e3;
+unsigned long intervallMicros = 50e3;
 unsigned long lastIteration = 0;
 unsigned long iterationStarted = 0;
 unsigned long iterationDuration = 0;
