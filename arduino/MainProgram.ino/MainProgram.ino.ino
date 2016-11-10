@@ -2,9 +2,10 @@
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-unsigned long intervallMillis = 50;
+unsigned long intervallMicros = 50000;
 unsigned long lastIteration = 0;
 unsigned long timeDifference = 0;
+
 int analogValues[] = {0,0,0,0,0};
 
 // Error Codes
@@ -14,20 +15,21 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  Serial.println("Started");
 
   lcd.begin(16, 2);
   lcd.print("Rotor Testing Bench");
-  lastIteration = millis();
+  lastIteration = micros();
 }
 
 void loop()
 {
-  timeDifference = millis() - lastIteration;
-  if(timeDifference < intervallMillis)
-    delay(intervallMillis-timeDifference);
+  timeDifference = micros() - lastIteration;
+  if(timeDifference < intervallMicros)
+    delayMicroseconds(intervallMicros-timeDifference);
     
   // Send error if intervall couldnt be reached
-  if(timeDifference > intervallMillis)
+  if(timeDifference > intervallMicros)
     sendError(errorIntervallTimeExceeded);
     
   // Read all values here
@@ -40,10 +42,11 @@ void loop()
   lcd.setCursor(0, 1);
   lcd.print(timeDifference);
   lcd.print(" of ");
-  lcd.print(intervallMillis);
+  lcd.print(intervallMicros);
+  lcd.print(" micros");
     
   // Reset current time
-  lastIteration = millis();  
+  lastIteration = micros();  
 }
 
 void readAnalogValues()
