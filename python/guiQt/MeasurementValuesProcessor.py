@@ -35,3 +35,6 @@ class MeasurementValuesProcessor:
         # print("Mapped Values: {}".format(self.valuesPressure))
         return [sensor[-numberOfvalues:] for sensor in self.valuesPressure]
 
+    def stop_serial(self):
+        self.arduino.terminate = True
+

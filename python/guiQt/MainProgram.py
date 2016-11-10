@@ -12,6 +12,6 @@ measurementValuesProcessor = MeasurementValuesProcessor('/dev/' + prefixed[0])
 ## Always start by initializing Qt (only once per application)
 app = QtGui.QApplication([])
 
-gui = Gui(measurementValuesProcessor)
+gui = Gui(measurementValuesProcessor, None)
 ## Start the Qt event loop
 app.exec_()
