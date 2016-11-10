@@ -28,11 +28,11 @@ class ValueMapper:
 
     def map_value(self, value):
         for i in range(len(self.mapping)):
-            vlaueInvoltage = value*self.perBit
-            if vlaueInvoltage >= self.mapping[i][0]:
+            valueInvoltage = value*self.perBit
+            if valueInvoltage >= self.mapping[i][0]:
                 x1 = self.mapping[i][0]
                 x2 = self.mapping[i+1][0]
                 y1 = self.mapping[i][1]
                 y2 = self.mapping[i+1][1]
-                return y1 + ((vlaueInvoltage - x1)*(y2 - y1))/(x2-x1)
+                return y1 + ((valueInvoltage - x1)*(y2 - y1))/(x2-x1)
         return value
