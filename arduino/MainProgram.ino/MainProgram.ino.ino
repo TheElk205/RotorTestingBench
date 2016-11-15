@@ -91,12 +91,14 @@ void sendData(int pin, int value, unsigned long timestamp)
   Serial.write(0);
   Serial.write(0);
   Serial.write(0);
+  Serial.write(0);
 
   //Write pin
   Serial.write(getNthByte(pin, 0));
 
   //Write value
   Serial.write(getNthByte(value, 0));
+  Serial.write(getNthByte(value, 1));
 
   //Write Timestamp
   Serial.write(getNthByte(timestamp, 0));

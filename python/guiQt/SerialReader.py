@@ -38,7 +38,7 @@ class SerialReader (threading.Thread):
         isMessage = False
         if not isMessage:
             zerosCount = 0
-            while zerosCount < 5:
+            while zerosCount < 6:
                 bytes = self.arduino.read(1)
                 if unpack('B', bytes)[0] == 0:
                     zerosCount = zerosCount +1
@@ -48,7 +48,7 @@ class SerialReader (threading.Thread):
         # print("Message Started: ")
         pin = unpack('B', self.arduino.read(1))[0]
         # print("Pin: {0}".format(pin))
-        value = unpack('B', self.arduino.read(1))[0]
+        value = unpack('H', self.arduino.read(2))[0]
         # print("value: {0}".format(value))
         time = unpack('I', self.arduino.read(4))[0]
         # print("time: {0}".format(time))

@@ -17,8 +17,8 @@ class Gui(QtGui.QWidget):
         self.measurementValuesProcessor = measurementValuesProcessor
         self.btn = QtGui.QPushButton('press me')
         # self.btn.clicked.connect(self.test)
-        self.text = QtGui.QLineEdit('enter text')
-        self.listw = QtGui.QListWidget()
+        # self.text = QtGui.QLineEdit('enter text')
+        # self.listw = QtGui.QListWidget()
         self.plot = pg.PlotWidget()
 
         ## Create a grid layout to manage the widgets size and position
@@ -26,10 +26,10 @@ class Gui(QtGui.QWidget):
         self.setLayout(self.layout)
 
         ## Add widgets to the layout in their proper positions
-        self.layout.addWidget(self.btn, 0, 0)  # button goes in upper-left
-        self.layout.addWidget(self.text, 1, 0)  # text edit goes in middle-left
-        self.layout.addWidget(self.listw, 2, 0)  # list widget goes in bottom-left
-        self.layout.addWidget(self.plot, 0, 1, 3, 1)  # plot goes on right side, spanning 3 rows
+        # self.layout.addWidget(self.btn, 0, 0)  # button goes in upper-left
+        # self.layout.addWidget(self.text, 1, 0)  # text edit goes in middle-left
+        # self.layout.addWidget(self.listw, 2, 0)  # list widget goes in bottom-left
+        self.layout.addWidget(self.plot)  # plot goes on right side, spanning 3 rows
 
         for i in range(0, 4):
             self.yValues.append(np.zeros(shape=self.numberShownPoints))

@@ -30,10 +30,11 @@ class MeasurementValuesProcessor:
         :param numberOfvalues:
         :return:
         """
-        self.valuesPressure = [self.valueMapper.get_mapped_value(sensor) for sensor in self.arduino.values]
+        self.valuesPressure = [self.valueMapper.get_mapped_value(sensor[-numberOfvalues:]) for sensor in self.arduino.values]
+        # self.valuesPressure = self.arduino.values
         # print("Arduino Values: {}".format(self.arduino.values))
         # print("Mapped Values: {}".format(self.valuesPressure))
-        return [sensor[-numberOfvalues:] for sensor in self.valuesPressure]
+        return [sensor for sensor in self.valuesPressure]
 
     def stop_serial(self):
         self.arduino.terminate = True
