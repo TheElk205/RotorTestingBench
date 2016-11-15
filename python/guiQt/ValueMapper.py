@@ -45,7 +45,7 @@ class ValueMapper:
         for i in range(len(mapping)-1):
             valueInvoltage = value*self.perBit
             if valueInvoltage >= mapping[i][0] and valueInvoltage < mapping[i+1][0]:
-                print("in range: {0} and {1} = {2}".format(mapping[i][0], mapping[i + 1][0], valueInvoltage))
+                # print("in range: {0} and {1} = {2}".format(mapping[i][0], mapping[i + 1][0], valueInvoltage))
                 x1 = mapping[i][0]
                 x2 = mapping[i + 1][0]
                 y1 = mapping[i][1]

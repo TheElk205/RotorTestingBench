@@ -1,6 +1,11 @@
 from PyQt4 import QtGui  # (the example applies equally well to PySide)
 import pyqtgraph as pg
 import numpy as np
+from PyQt4.QtGui import QSlider
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
 
 class Gui(QtGui.QWidget):
     yValues = []
@@ -15,10 +20,17 @@ class Gui(QtGui.QWidget):
 
         ## Create some widgets to be placed inside
         self.measurementValuesProcessor = measurementValuesProcessor
-        self.btn = QtGui.QPushButton('press me')
+        # self.btn = QtGui.QPushButton('press me')
         # self.btn.clicked.connect(self.test)
         # self.text = QtGui.QLineEdit('enter text')
         # self.listw = QtGui.QListWidget()
+        self.sl = QSlider(Qt.Horizontal)
+        self.sl.setMinimum(0)
+        self.sl.setMaximum(255)
+        self.sl.setValue(0)
+        self.slText = QtGui.QLineEdit('0')
+        self.sl.valueChanged.connect(self.motorSliderChanged)
+
         self.plot = pg.PlotWidget()
 
         ## Create a grid layout to manage the widgets size and position
@@ -29,7 +41,9 @@ class Gui(QtGui.QWidget):
         # self.layout.addWidget(self.btn, 0, 0)  # button goes in upper-left
         # self.layout.addWidget(self.text, 1, 0)  # text edit goes in middle-left
         # self.layout.addWidget(self.listw, 2, 0)  # list widget goes in bottom-left
-        self.layout.addWidget(self.plot)  # plot goes on right side, spanning 3 rows
+        self.layout.addWidget(self.sl, 0, 0)
+        self.layout.addWidget(self.slText, 1, 0)
+        self.layout.addWidget(self.plot, 0, 1)  # plot goes on right side, spanning 3 rows
 
         for i in range(0, 4):
             self.yValues.append(np.zeros(shape=self.numberShownPoints))
@@ -60,3 +74,7 @@ class Gui(QtGui.QWidget):
 
     def closeEvent(self, event):
         self.measurementValuesProcessor.stop_serial()
+
+    def motorSliderChanged(self, value):
+        print("Slider value: {0}".format(value))
+        self.slText.setText("{0}".format(value))
