@@ -1,0 +1,11 @@
+syntax = "proto3";
+package rotorTestingBench;
+
+message ToArduino {
+    int32 pressure1 = 1;
+    int32 pressure2 = 2;
+    int32 pressure3 = 3;
+    int32 pressure4 = 4;
+
+    int32 error = 5;
+}
