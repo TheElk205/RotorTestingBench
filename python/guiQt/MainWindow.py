@@ -13,11 +13,12 @@ class Gui(QtGui.QWidget):
     curves = []
     pens = ['r', 'g', 'b', 'c']
     numberShownPoints = 100
+    serialCommunicator = None
 
-    def __init__(self, measurementValuesProcessor, *args):
+    def __init__(self, measurementValuesProcessor, serialCommunicator, *args):
         QtGui.QWidget.__init__(self, *args)
         self.measurementValuesProcessor = measurementValuesProcessor
-
+        self.serialCommunicator = serialCommunicator
         ## Create some widgets to be placed inside
         self.measurementValuesProcessor = measurementValuesProcessor
         # self.btn = QtGui.QPushButton('press me')
@@ -78,3 +79,4 @@ class Gui(QtGui.QWidget):
     def motorSliderChanged(self, value):
         print("Slider value: {0}".format(value))
         self.slText.setText("{0}".format(value))
+        self.serialCommunicator.send_bytes_to_serial(value)

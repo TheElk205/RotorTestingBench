@@ -11,7 +11,7 @@ from struct import unpack, calcsize
 from serial import Serial
 
 
-class SerialReader (threading.Thread):
+class SerialCommunicator (threading.Thread):
     values = [[] for y in range(5)]
     terminate = False
     path = '/dev/ttyACM0'
@@ -33,6 +33,9 @@ class SerialReader (threading.Thread):
             except serial.SerialException as serEx:
                 print("Serial exception: {0}".format(serEx))
                 self.terminate = True
+
+    def send_bytes_to_serial(self, data):
+        self.arduino.write(bytearray([data]))
 
     def read_bytes_from_serial(self):
         isMessage = False

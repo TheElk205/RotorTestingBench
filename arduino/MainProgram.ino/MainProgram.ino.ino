@@ -2,7 +2,8 @@
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-unsigned long intervallMicros = 50e3;
+unsigned long intervallMicros = 50e3; // millisecondse3
+
 unsigned long lastIteration = 0;
 unsigned long iterationStarted = 0;
 unsigned long iterationDuration = 0;
@@ -10,6 +11,7 @@ unsigned long timeDifference = 0;
 int iterationsDone = 0;
 
 int analogValues[] = {0,0,0,0,0};
+int pwmMotor1 = 0;
 
 // Error Codes
 int errorIntervallTimeExceeded = 100;
@@ -29,18 +31,27 @@ void setup()
 }
 
 void loop()
-{
+{  
   if(inCycle)
   {
+    iterationStarted = micros();
+
+    // Read commands from python program
+    readFromSerial();
+
     // Read all values here
     readAnalogValues();
-  
+    
     // Send all values here
     sendAnalogValues();
+
+    //Wirte to display here
+    printToDisplay();
     
     // Reset current time
     inCycle = false;
     lastIteration = micros();
+    iterationDuration = lastIteration - iterationStarted;
   }
   else
   {
@@ -51,6 +62,24 @@ void loop()
     }
   }
 
+}
+
+void printToDisplay()
+{
+  lcd.setCursor(0, 1);
+  lcd.print("                ");
+  lcd.setCursor(0, 1);
+  lcd.print("");
+  lcd.print(iterationDuration);
+  lcd.print(" Pwm: ");
+  lcd.print(pwmMotor1);
+}
+
+void readFromSerial()
+{
+  if (Serial.available() > 0){
+    pwmMotor1 = Serial.read();
+  }
 }
 
 void readAnalogValues()
@@ -74,6 +103,7 @@ void sendError(int errorCode)
   sendData(-1, errorCode, millis());
 }
 
+// Will be replaced by protobuf soon
 void sendData(int pin, int value, unsigned long timestamp)
 {
   /*

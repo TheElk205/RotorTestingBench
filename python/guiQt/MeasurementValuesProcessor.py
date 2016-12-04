@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import numpy as np
 
-from python.guiQt.SerialReader import SerialReader
+from python.guiQt.SerialCommunicator import SerialCommunicator
 from python.guiQt.ValueMapper import ValueMapper
 
 
@@ -13,9 +13,8 @@ class MeasurementValuesProcessor:
     # Will contain all values read from serial mapped accordingly
     valuesPressure = [[] for y in range(5)]
 
-    def __init__(self, path):
-        self.path = path
-        self.arduino = SerialReader(path)
+    def __init__(self, serialCommunicator):
+        self.arduino = serialCommunicator
         self.arduino.start()
         self.valueMapper = ValueMapper()
 

@@ -5,7 +5,7 @@ from pyqtgraph.Qt import QtCore, QtGui
 import numpy as np
 
 from python.guiQt.MeasurementValuesProcessor import MeasurementValuesProcessor
-from python.guiQt.SerialReader import SerialReader
+from python.guiQt.SerialCommunicator import SerialCommunicator
 
 win = pg.GraphicsWindow()
 win.setWindowTitle('pyqtgraph example: Scrolling Plots')
@@ -26,7 +26,7 @@ for i in range(0, 4):
 
 threads = []
 
-valuesProcessor = MeasurementValuesProcessor('/dev/ttyACM0')
+valuesProcessor = MeasurementValuesProcessor(SerialCommunicator('/dev/ttyACM0'))
 
 def update1():
     global yValues, curves
