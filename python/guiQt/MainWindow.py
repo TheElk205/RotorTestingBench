@@ -8,7 +8,7 @@ from PyQt4.QtGui import *
 
 
 class Gui(QtGui.QWidget):
-    maxPwm = 100;
+    maxPwm = 255
     yValues = []
     xValues = []
     curves = []

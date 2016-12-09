@@ -1,7 +1,7 @@
 #include <LiquidCrystal.h>
 #include "fromArduino.h"
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+//LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 unsigned long intervallMicros = 50e3; // millisecondse3
 
@@ -13,7 +13,7 @@ int iterationsDone = 0;
 
 int analogValues[] = {0,0,0,0,0};
 int pwmMotor1 = 0;
-int motorPin = 3;
+int motorPin = 2;
 
 // Error Codes
 int errorIntervallTimeExceeded = 100;
@@ -22,38 +22,36 @@ boolean inCycle = true;
 
 void setup()
 {
-  pinMode(motorPin, OUTPUT);
+  //pinMode(motorPin, OUTPUT);
   
   // put your setup code here, to run once:
   Serial.begin(9600);
   Serial.println("Started");
 
-  lcd.begin(16, 2);
-  lcd.clear();
-  lcd.print("Rotor Testing");
+  //lcd.begin(16, 2);
+  //lcd.clear();
+  //lcd.print("Rotor Testing");
   lastIteration = micros();
 }
 
 void loop()
 {  
+  writeAnalogValues();
   if(inCycle)
   {
     iterationStarted = micros();
 
     // Read commands from python program
     readFromSerial();
-
-    //Write Motor Vlaues
-    writeAnalogValues();
     
     // Read all values here
-    readAnalogValues();
+    readAnalogValues();    
     
     // Send all values here
     sendAnalogValues();
 
     //Wirte to display here
-    printToDisplay();
+    //printToDisplay();
     
     // Reset current time
     inCycle = false;
@@ -71,7 +69,7 @@ void loop()
 
 }
 
-void printToDisplay()
+/*void printToDisplay()
 {
   lcd.setCursor(0, 1);
   lcd.print("                ");
@@ -80,7 +78,7 @@ void printToDisplay()
   lcd.print(iterationDuration);
   lcd.print(" Pwm: ");
   lcd.print(pwmMotor1);
-}
+}*/
 
 void readFromSerial()
 {
@@ -100,7 +98,6 @@ void readAnalogValues()
 void writeAnalogValues()
 {
   analogWrite(motorPin, pwmMotor1);
-  sendData(5, pwmMotor1, millis());
 }
 
 void sendAnalogValues()
