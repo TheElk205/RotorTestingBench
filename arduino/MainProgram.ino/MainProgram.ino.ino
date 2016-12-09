@@ -1,7 +1,5 @@
 #include <LiquidCrystal.h>
-extern "C" {
-  #include "fromArduino.h"
-}
+#include "fromArduino.h"
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
@@ -46,7 +44,7 @@ void loop()
     readAnalogValues();
     
     // Send all values here
-    sendAnalogValuesProtobuf();
+    sendAnalogValues();
 
     //Wirte to display here
     printToDisplay();
@@ -103,6 +101,7 @@ void sendAnalogValues()
 
 void sendAnalogValuesProtobuf()
 {
+  /*
   RotorTestingBench__ToArduino toSend;
   toSend.pressure1 = analogValues[0];
   toSend.pressure2 = analogValues[1];
@@ -116,6 +115,7 @@ void sendAnalogValuesProtobuf()
   Serial.write(buffer, packageSize);
   
   free(buffer);  
+  */
 }
 
 void sendError(int errorCode)
