@@ -13,6 +13,7 @@ int iterationsDone = 0;
 
 int analogValues[] = {0,0,0,0,0};
 int pwmMotor1 = 0;
+int motorPin = 3;
 
 // Error Codes
 int errorIntervallTimeExceeded = 100;
@@ -21,6 +22,8 @@ boolean inCycle = true;
 
 void setup()
 {
+  pinMode(motorPin, OUTPUT);
+  
   // put your setup code here, to run once:
   Serial.begin(9600);
   Serial.println("Started");
@@ -40,6 +43,9 @@ void loop()
     // Read commands from python program
     readFromSerial();
 
+    //Write Motor Vlaues
+    writeAnalogValues();
+    
     // Read all values here
     readAnalogValues();
     
@@ -89,6 +95,12 @@ void readAnalogValues()
   {
     analogValues[i] = analogRead(i);
   }
+}
+
+void writeAnalogValues()
+{
+  analogWrite(motorPin, pwmMotor1);
+  sendData(5, pwmMotor1, millis());
 }
 
 void sendAnalogValues()

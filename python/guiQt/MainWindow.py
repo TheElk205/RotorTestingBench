@@ -8,6 +8,7 @@ from PyQt4.QtGui import *
 
 
 class Gui(QtGui.QWidget):
+    maxPwm = 100;
     yValues = []
     xValues = []
     curves = []
@@ -27,7 +28,7 @@ class Gui(QtGui.QWidget):
         # self.listw = QtGui.QListWidget()
         self.sl = QSlider(Qt.Horizontal)
         self.sl.setMinimum(0)
-        self.sl.setMaximum(255)
+        self.sl.setMaximum(self.maxPwm)
         self.sl.setValue(0)
         self.slText = QtGui.QLineEdit('0')
         self.sl.valueChanged.connect(self.motorSliderChanged)

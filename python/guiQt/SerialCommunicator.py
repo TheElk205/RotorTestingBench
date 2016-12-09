@@ -12,7 +12,7 @@ from serial import Serial
 
 
 class SerialCommunicator (threading.Thread):
-    values = [[] for y in range(5)]
+    values = [[] for y in range(6)]
     terminate = False
     path = '/dev/ttyACM0'
     arduino = None
@@ -57,6 +57,8 @@ class SerialCommunicator (threading.Thread):
         # print("time: {0}".format(time))
 
         valuepair = np.array([time, value])
+        if(pin == 5):
+            print(value)
         self.values[pin].append(valuepair)
 
     def exit(self):
